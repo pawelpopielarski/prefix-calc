@@ -7,10 +7,25 @@ class TestPrefixCalculator(unittest.TestCase):
     def setUp(self):
         self.target = PrefixCalculator.PrefixCalculator()
 
-    def test_calculate(self):
-        self.assertEqual(0, self.target.calculate([]))
+    def test_init(self):
+        self.assertEqual(0, len(self.target.stack))
 
-    def test_calculate(self):
+    def test_calculate_negative(self):
+        with self.assertRaises(PrefixCalculator.InvalidInputError):
+            self.target.calculate(['0','0'])
+        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+            self.target.calculate(['0','0','*','0'])
+        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+            self.target.calculate(['*','*','0','0'])
+
+    def test_state_clear_after_invalid_input(self):
+        with self.assertRaises(PrefixCalculator.InvalidInputError):
+            self.target.calculate(['0','0'])
+
+        self.assertEqual(1, self.target.calculate(['-','3','2']))
+        
+    def test_calculate_positive(self):
+        self.assertEqual(0, self.target.calculate([]))
         self.assertEqual(7, self.target.calculate(['+','1','*','2','3']))
         self.assertEqual(-1, self.target.calculate(['-','2','3']))
         self.assertEqual(1, self.target.calculate(['-','3','2']))

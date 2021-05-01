@@ -51,6 +51,8 @@ class PrefixCalculator(object):
         """
         if not len(args):
             return 0
+
+        self.stack.clear()
         
         while len(args):
             arg = args.pop()
