@@ -22,45 +22,66 @@ class InvalidInputError(Exception):
 1 (or 1.5)
 """
 class PrefixCalculator(object):
-    def __init__(self):
-        self.valid_operations = ['+','-','*','/']
+    operations = {
+        '+': lambda a,b: a+b,
+        '-': lambda a,b: a-b,
+        '*': lambda a,b: a*b,
+        '/': lambda a,b: a/b,
+    }
 
-    def is_valid(self, arg) -> bool:
+    def __init__(self):
+        self.stack = deque()
+
+    def validate(self, arg) -> None:
         """
         validate that arg is a proper argument for calculation
+        i.e. it is either an integer or {+, -, *, /}
         """
-        if arg in self.valid_operations:
-            return True
+        if arg in self.operations.keys():
+            return
         
         try:
-            return int(arg, base=10) >= 0
+            val = int(arg, base=10)
         except(ValueError):
-            return False
+            raise InvalidInputError('{0} argument invalid'.format(arg))
 
     def calculate(self, args) -> int:
         """
-        args support the operators {+, -, *, /} and positive integers
+        args support the operators {+, -, *, /} and integers
         """
         if not len(args):
             return 0
         
-        stack = deque()
-
         while len(args):
             arg = args.pop()
-            if not self.is_valid(arg):
-                raise InvalidInputError()
+            self.validate(arg)
+            self.__step(arg)
 
-        return 0
+        if len(self.stack) > 1:
+            raise InvalidInputError('Not enough operations to perform calculation')
+
+        return self.stack.pop()
+
+    def __step(self, arg) -> None:
+        if not arg in self.operations.keys():
+            self.stack.append(int(arg))
+            return
+
+        if len(self.stack) < 2:
+            raise InvalidInputError('Too many operations for given operands')
+
+        top = self.stack.pop()
+        bottom = self.stack.pop()
+        val = self.operations[arg](top, bottom)
+        self.stack.append(val)
 
 def main():
     args = sys.argv[1:]
-    print(args)
     try:
         calc = PrefixCalculator()
         print(calc.calculate(args))
-    except(InvalidInputError):
-        print("Invalid input")
+    except(InvalidInputError) as e:
+        print(e)
 
 if __name__ == "__main__":
     main()
