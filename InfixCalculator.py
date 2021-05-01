@@ -16,29 +16,26 @@ class InfixCalculator(object):
             return 0
 
         result = self.__transform(args)
-        print(result)
-        result.reverse()
-        print(result)
         calc = PrefixCalculator.PrefixCalculator()
         return calc.calculate(result)
 
     def __transform(self, args) -> list:
         output = deque()
         operators = deque()
-        symbols_allowed = ['(',')']
-        for op in self.ops.keys():
-            symbols_allowed.append(op)
+        symbols_allowed = [ op for op in self.ops.keys()] + ['(',')']
         
+        args.reverse()
+
         for arg in args:
             validation.validate(arg, symbols_allowed)
 
-            if arg == '(':
+            if arg == ')':
                 operators.append(arg)
-            elif arg == ')':
+            elif arg == '(':
                 found = False
                 while len(operators):
                     val = operators.pop()
-                    if val == '(':
+                    if val == ')':
                         found = True
                         break
                     output.append(val)
@@ -47,13 +44,6 @@ class InfixCalculator(object):
                     raise InvalidInputError('Parentheses mismatch')
 
             elif arg in self.ops.keys():
-                while len(operators):
-                    var = operators.pop()
-                    if var == '(':
-                        operators.append('(')
-                        break
-                    output.append(var)
-                
                 operators.append(arg)
 
             else:
@@ -64,8 +54,9 @@ class InfixCalculator(object):
             if not val in self.ops.keys():
                 raise InvalidInputError('Parentheses mismatch')
 
-            output.push(val)
+            output.append(val)
         
+        output.reverse()
         return output
 
 def main():

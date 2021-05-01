@@ -1,5 +1,5 @@
 import unittest
-import PrefixCalculator
+import PrefixCalculator, calcerrors
 
 class TestPrefixCalculator(unittest.TestCase):
     def setUp(self):
@@ -9,17 +9,17 @@ class TestPrefixCalculator(unittest.TestCase):
         self.assertEqual(0, len(self.target.stack))
 
     def test_calculate_negative(self):
-        with self.assertRaises(PrefixCalculator.InvalidInputError):
+        with self.assertRaises(calcerrors.InvalidInputError):
             self.target.calculate(['0','0'])
-        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+        with self.assertRaises(calcerrors.InvalidInputError):    
             self.target.calculate(['0','0','*','0'])
-        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+        with self.assertRaises(calcerrors.InvalidInputError):    
             self.target.calculate(['*','*','0','0'])
-        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+        with self.assertRaises(calcerrors.InvalidInputError):    
             self.target.calculate(['0','0','*'])
 
     def test_state_clear_after_invalid_input(self):
-        with self.assertRaises(PrefixCalculator.InvalidInputError):
+        with self.assertRaises(calcerrors.InvalidInputError):
             self.target.calculate(['0','0'])
 
         self.assertEqual(1, self.target.calculate(['-','3','2']))
