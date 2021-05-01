@@ -1,6 +1,4 @@
-import unittest, random
-from string import ascii_lowercase
-
+import unittest
 import PrefixCalculator
 
 class TestPrefixCalculator(unittest.TestCase):
@@ -17,6 +15,8 @@ class TestPrefixCalculator(unittest.TestCase):
             self.target.calculate(['0','0','*','0'])
         with self.assertRaises(PrefixCalculator.InvalidInputError):    
             self.target.calculate(['*','*','0','0'])
+        with self.assertRaises(PrefixCalculator.InvalidInputError):    
+            self.target.calculate(['0','0','*'])
 
     def test_state_clear_after_invalid_input(self):
         with self.assertRaises(PrefixCalculator.InvalidInputError):
@@ -26,6 +26,7 @@ class TestPrefixCalculator(unittest.TestCase):
         
     def test_calculate_positive(self):
         self.assertEqual(0, self.target.calculate([]))
+        self.assertEqual(-3, self.target.calculate(['-','0','3']))
         self.assertEqual(7, self.target.calculate(['+','1','*','2','3']))
         self.assertEqual(-1, self.target.calculate(['-','2','3']))
         self.assertEqual(1, self.target.calculate(['-','3','2']))
@@ -33,25 +34,6 @@ class TestPrefixCalculator(unittest.TestCase):
         self.assertEqual(5, self.target.calculate(['+', '*', '1', '2', '3']))
         self.assertEqual(3, self.target.calculate(['-', '/', '10', '+', '1', '1', '*', '1', '2']))
         self.assertEqual(1.5, self.target.calculate(['/','3','2']))
-
-    def test_validate_correct_operators(self):
-        for op in ['+','-','*','/']:
-            self.target.validate(op)
-
-    def test_validate_correct_simple_numbers(self):
-        for i in range(1000):
-            val = str(i)
-            self.target.validate(val)
-
-    def test_validate_correct_random_numbers(self):
-        for i in range(1000):
-            rand = str(random.randint(0, 10000000))
-            self.target.validate(rand)
-
-    def test_validate_incorrect_input(self):
-        for op in ascii_lowercase:
-            with self.assertRaises(PrefixCalculator.InvalidInputError):
-                self.target.validate(op)
 
 if __name__ == '__main__':
     unittest.main()

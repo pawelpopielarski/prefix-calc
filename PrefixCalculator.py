@@ -1,53 +1,18 @@
 import sys
 from collections import deque
 
-#move to another file
-class InvalidInputError(Exception):
-    pass
+from calcerrors import InvalidInputError
+import validation, operations
 
-"""
-> 3
-3
-> + 1 2
-3
-> + 1 * 2 3
-7
-> + * 1 2 3
-5
-> - / 10 + 1 1 * 1 2
-3
-> - 0 3
--3
-> / 3 2
-1 (or 1.5)
-"""
 class PrefixCalculator(object):
-    operations = {
-        '+': lambda a,b: a+b,
-        '-': lambda a,b: a-b,
-        '*': lambda a,b: a*b,
-        '/': lambda a,b: a/b,
-    }
+    ops = operations.get()
 
     def __init__(self):
         self.stack = deque()
 
-    def validate(self, arg) -> None:
-        """
-        validate that arg is a proper argument for calculation
-        i.e. it is either an integer or {+, -, *, /}
-        """
-        if arg in self.operations.keys():
-            return
-        
-        try:
-            val = int(arg, base=10)
-        except(ValueError):
-            raise InvalidInputError('{0} argument invalid'.format(arg))
-
     def calculate(self, args) -> int:
         """
-        args support the operators {+, -, *, /} and integers
+        args support operators {+, -, *, /} and integers
         """
         if not len(args):
             return 0
@@ -56,7 +21,7 @@ class PrefixCalculator(object):
         
         while len(args):
             arg = args.pop()
-            self.validate(arg)
+            validation.validate(arg, self.ops.keys())
             self.__step(arg)
 
         if len(self.stack) > 1:
@@ -65,7 +30,7 @@ class PrefixCalculator(object):
         return self.stack.pop()
 
     def __step(self, arg) -> None:
-        if not arg in self.operations.keys():
+        if not arg in self.ops.keys():
             self.stack.append(int(arg))
             return
 
@@ -74,7 +39,7 @@ class PrefixCalculator(object):
 
         top = self.stack.pop()
         bottom = self.stack.pop()
-        val = self.operations[arg](top, bottom)
+        val = self.ops[arg](top, bottom)
         self.stack.append(val)
 
 def main():
