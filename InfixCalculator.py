@@ -24,9 +24,8 @@ class InfixCalculator(object):
         operators = deque()
         symbols_allowed = [ op for op in self.ops.keys()] + ['(',')']
         
-        args.reverse()
-
-        for arg in args:
+        while len(args):
+            arg = args.pop()
             validation.validate(arg, symbols_allowed)
 
             if arg == ')':
