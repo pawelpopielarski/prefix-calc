@@ -5,7 +5,7 @@ import calcerrors
 
 app = Flask(__name__)
 
-def handleCalc(req, calc):
+def handle_calc(req, calc):
     try:
         result = calc.calculate(req.json['statement'].split())
         return make_response(jsonify({'result': '{}'.format(result)}), 200)
@@ -29,21 +29,21 @@ def index():
 
 @app.route('/calc/v1', methods=['GET'])
 def help():
-    return "POST /calc/v1/infix\nPOST /calc/v1/prefix"
+    return "POST /calc/v1/infix\nPOST /calc/v1/prefix\nexample json for prefix:" + '{"statement":"- / 10 + 1 1 * 1 2"}'
 
 @app.route('/calc/v1/infix', methods=['POST'])
 def infix():
     valid, reply = validate(request)
     if not valid:
         return reply
-    return handleCalc(request, InfixCalculator.InfixCalculator())
+    return handle_calc(request, InfixCalculator.InfixCalculator())
 
 @app.route('/calc/v1/prefix', methods=['POST'])
 def prefix():
     valid, reply = validate(request)
     if not valid:
         return reply
-    return handleCalc(request, PrefixCalculator.PrefixCalculator())
+    return handle_calc(request, PrefixCalculator.PrefixCalculator())
 
 if __name__ == "__main__":
     app.run(debug=True)
