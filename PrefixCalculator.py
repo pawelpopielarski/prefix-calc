@@ -15,7 +15,8 @@ class PrefixCalculator(object):
         args support operators {+, -, *, /} and integers
         """
         if not len(args):
-            return 0
+            raise InvalidInputError('Please provide a valid statement with '
+                'operators i.e. {} and positive integers'.format([ op for op in self.ops.keys()]))
 
         self.stack.clear()
         

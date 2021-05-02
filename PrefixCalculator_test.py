@@ -17,6 +17,8 @@ class TestPrefixCalculator(unittest.TestCase):
             self.target.calculate(['*','*','0','0'])
         with self.assertRaises(calcerrors.InvalidInputError):    
             self.target.calculate(['0','0','*'])
+        with self.assertRaises(calcerrors.InvalidInputError):  
+            self.assertEqual(0, self.target.calculate([]))
 
     def test_state_clear_after_invalid_input(self):
         with self.assertRaises(calcerrors.InvalidInputError):
@@ -25,7 +27,6 @@ class TestPrefixCalculator(unittest.TestCase):
         self.assertEqual(1, self.target.calculate(['-','3','2']))
         
     def test_calculate_positive(self):
-        self.assertEqual(0, self.target.calculate([]))
         self.assertEqual(-3, self.target.calculate(['-','0','3']))
         self.assertEqual(7, self.target.calculate(['+','1','*','2','3']))
         self.assertEqual(-1, self.target.calculate(['-','2','3']))

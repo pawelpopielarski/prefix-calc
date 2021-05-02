@@ -7,13 +7,15 @@ import validation, operations
 
 class InfixCalculator(object):
     ops = operations.get()
+    symbols_allowed = [ op for op in ops.keys()] + ['(',')']
 
     def calculate(self, args) -> int:
         """
         args support parentheses, operators {+, -, *, /} and integers
         """
         if not len(args):
-            return 0
+            raise InvalidInputError('Please provide a valid statement with '
+                'operators i.e. {} and positive integers'.format(self.symbols_allowed))
 
         result = self.__transform(args)
         calc = PrefixCalculator.PrefixCalculator()
@@ -22,11 +24,10 @@ class InfixCalculator(object):
     def __transform(self, args) -> list:
         output = deque()
         operators = deque()
-        symbols_allowed = [ op for op in self.ops.keys()] + ['(',')']
         
         while len(args):
             arg = args.pop()
-            validation.validate(arg, symbols_allowed)
+            validation.validate(arg, self.symbols_allowed)
 
             if arg == ')':
                 operators.append(arg)
