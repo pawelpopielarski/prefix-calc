@@ -1,5 +1,13 @@
 from calcerrors import InvalidInputError
 
+def sanitize_input(arg, msg) -> list:
+    if len(arg) > 1:
+        raise InvalidInputError('Please enclose the statement in ""')
+    elif len(arg) == 0:
+        raise InvalidInputError(msg)
+
+    return arg[0].split()
+
 def validate(arg, keys) -> None:
     """
     validate that arg is a proper argument for calculation

@@ -9,13 +9,16 @@ class InfixCalculator(object):
     ops = operations.get()
     symbols_allowed = [ op for op in ops.keys()] + ['(',')']
 
+    def help(self) -> str:
+        return 'Please provide a valid statement with '\
+                'operators i.e. {} and positive integers'.format(self.symbols_allowed)
+
     def calculate(self, args) -> int:
         """
         args support parentheses, operators {+, -, *, /} and integers
         """
         if not len(args):
-            raise InvalidInputError('Please provide a valid statement with '
-                'operators i.e. {} and positive integers'.format(self.symbols_allowed))
+            raise InvalidInputError(self.help())
 
         result = self.__transform(args)
         calc = PrefixCalculator.PrefixCalculator()
@@ -63,7 +66,8 @@ def main():
     args = sys.argv[1:]
     try:
         calc = InfixCalculator()
-        print(calc.calculate(args))
+        statement = validation.sanitize_input(args, calc.help())
+        print(calc.calculate(statement))
     except(InvalidInputError) as e:
         print(e)
 

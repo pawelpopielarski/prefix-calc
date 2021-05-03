@@ -10,13 +10,16 @@ class PrefixCalculator(object):
     def __init__(self):
         self.stack = deque()
 
+    def help(self) -> str:
+        return 'Please provide a valid statement with '\
+            'operators i.e. {} and positive integers'.format([ op for op in self.ops.keys()])
+
     def calculate(self, args) -> int:
         """
         args support operators {+, -, *, /} and integers
         """
         if not len(args):
-            raise InvalidInputError('Please provide a valid statement with '
-                'operators i.e. {} and positive integers'.format([ op for op in self.ops.keys()]))
+            raise InvalidInputError(self.help())
 
         self.stack.clear()
         
@@ -47,7 +50,8 @@ def main():
     args = sys.argv[1:]
     try:
         calc = PrefixCalculator()
-        print(calc.calculate(args))
+        statement = validation.sanitize_input(args, calc.help())
+        print(calc.calculate(statement))
     except(InvalidInputError) as e:
         print(e)
 
